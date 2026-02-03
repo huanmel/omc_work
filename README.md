@@ -8,7 +8,7 @@ This repository gathers scripts, notebooks, templates and helper code to make it
 
 ## Highlights 💡
 
-- Interactive examples and utilities are in `scripts/` and illustrated in `scripts/omc_test_main_example.ipynb` (IPython magics + `OMPython.ModelicaSystem`).
+- Interactive examples and utilities are in `scripts/` and illustrated in ['scripts/omc_test_main_example.ipynb'](scripts/omc_test_main_example.ipynb) (IPython magics + `OMPython.ModelicaSystem`).
 - Model files, reusable libraries and small demos live in `models/`.
 - `work/` contains build artifacts produced by `omc` when models are simulated.
 
@@ -26,7 +26,7 @@ Requirements:
 
 Example steps:
 
-1. Open the example notebook `scripts/omc_test_main_example.ipynb` and run the cells to:
+1. Open the example notebook [`scripts/omc_test_main_example.ipynb`](scripts/omc_test_main_example.ipynb) and run the cells to:
    - Start an `OMCSessionZMQ()` session.
    - Register and use IPython magics for Modelica code (`%%modelica`, `%%modelica simulate`, `%%modelica_script`).
    - Use `OMPython.ModelicaSystem` to load `.mo` files, set parameters, simulate and collect results.
@@ -73,5 +73,5 @@ Or use the included VS Code task **Run .mos with omc**.
 
 ---
 
-If something in the examples is unclear, open an issue or add a short example in `scripts/omc_test_main_example.ipynb` and I'll take a look. ✅
+If something in the examples is unclear, open an issue or add a short example in [`scripts/omc_test_main_example.ipynb`](scripts/omc_test_main_example.ipynb) and I'll take a look. ✅
 
