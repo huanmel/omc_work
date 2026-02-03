@@ -1,0 +1,18 @@
+// inputs: 
+// - modelName
+// - rootPath
+// return:
+// - currentDir
+// - workDir
+echo(true);
+workDir := rootPath + "work/"+modelName+"/";
+currentDir := cd();
+if directoryExists(workDir) then
+    remove(workDir);
+    mkdir(workDir);
+  else 
+    mkdir(workDir);
+end if;
+cd(workDir);
+print("currentDir:" + currentDir + "\n");
+print("workDir (we are here):" + workDir + "\n");

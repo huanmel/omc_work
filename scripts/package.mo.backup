@@ -1,0 +1,5 @@
+within ThermoFluidStreamTutorial;
+package MyWork "Package of additonal tests"
+  extends Modelica.Icons.ExamplesPackage;
+
+end MyWork;

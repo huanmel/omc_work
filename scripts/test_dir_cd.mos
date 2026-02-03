@@ -1,0 +1,9 @@
+rootPath := realpath(cd()+"/../");
+modelName := "Pendulum";
+// run cd script to change to working directory
+currentDir := "";
+workDir := "";
+runScript(rootPath + "scripts/change_work_dir.mos");
+// vars:=listVariables();
+// print("workDir: " + workDir + "\n");
+// print("currentDir: " + currentDir + "\n");

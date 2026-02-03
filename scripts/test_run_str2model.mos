@@ -1,0 +1,78 @@
+// diagnose_loadString.mos
+// Minimal test for loadString behavior
+
+print("=== Starting diagnostic ===\n");
+
+// === Variant 1: Hard-coded clean model (should work) ===
+cleanModel := "
+model CleanTest
+  Real x(start = 1.0);
+equation
+  der(x) = -x;
+end CleanTest;
+";
+
+print("1. Loading clean hardcoded model...\n");
+success1 := loadString(cleanModel);
+print("  loadString returned: " + String(success1) + "\n");
+
+err1 := getErrorString();
+print("  getErrorString after load: >>" + err1 + "<<\n");
+
+exists1 := isModel(CleanTest);
+print("  isModel(CleanTest) = " + String(exists1) + "\n");
+
+if exists1 then
+  print("  checkModel result:\n");
+  print(checkModel(CleanTest));
+  print("\n  getErrorString after check: " + getErrorString() + "\n");
+else
+  print("  → Model not inserted into scope!\n");
+end if;
+
+
+// === Variant 2: Your notebook-style string (simulate what happens in magic) ===
+notebookModel := "model Simple
+  Real x(start = 1.0);
+equation
+  der(x) = -x;
+end Simple;
+";
+
+print("\n2. Loading notebook-style string (no extra spaces)...\n");
+success2 := loadString(notebookModel);
+print("  loadString returned: " + String(success2) + "\n");
+
+err2 := getErrorString();
+print("  getErrorString after load: >>" + err2 + "<<\n");
+
+exists2 := isModel(Simple);
+print("  isModel(Simple) = " + String(exists2) + "\n");
+
+if exists2 then
+  print("  checkModel result:\n");
+  print(checkModel(Simple));
+else
+  print("  → Model not found after loadString!\n");
+end if;
+
+
+// === Variant 3: With possible indentation problem (common in Jupyter) ===
+indentedModel := "  model IndentedTest   // leading spaces on model line
+    Real y(start = 0.0);
+  equation
+    der(y) = 0.0;
+  end IndentedTest;";
+
+print("\n3. Loading indented version (common Jupyter copy-paste issue)...\n");
+success3 := loadString(indentedModel);
+print("  loadString returned: " + String(success3) + "\n");
+print("  getErrorString: >>" + getErrorString() + "<<\n");
+print("  isModel(IndentedTest) = " + String(isModel(IndentedTest)) + "\n");
+
+
+// Final summary
+print("\n=== Summary ===\n");
+print("Clean variant worked? " + String(exists1) + "\n");
+print("Notebook variant worked? " + String(exists2) + "\n");
+print("Indented variant worked? " + String(isModel(IndentedTest)) + "\n");

@@ -1,0 +1,19 @@
+cd("..");
+cd();
+echo(true);
+getVersion();
+getInstallationDirectoryPath();
+modelFile:="models/MyModel.mo";
+loadFile(modelFile);
+modelName:="Pendulum";
+rootPath :=cd()+"/";
+print(rootPath);
+currentDir := "";
+workDir := "";
+runScript("scripts/change_work_dir.mos");
+cd();
+
+isModel(Pendulum);
+simulate(Pendulum, stopTime=5);
+print(getErrorString());
+getClassNames();

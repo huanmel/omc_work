@@ -1,0 +1,168 @@
+// check_model.mos
+// ============================================
+// Model Check and Analysis Script
+// ============================================
+// In VS Code - press shortcuts to build and run this script:
+// - example: Ctrl+Shift+B
+// LINKS:
+// 1. https://build.openmodelica.org/Documentation/OpenModelica.Scripting.html
+
+// Define model name
+modelFile := "MyModel.mo";
+modelName := "Pendulum";
+// Define full path to model if needed (uncomment and modify if necessary)
+rootPath := realpath(cd()+"/../");
+
+modelPath := rootPath+"models/" + modelFile;
+// libraryName := "ThermoFluidStreamTutorial";
+// fullModelName := libraryName + "." + "MyWork." + modelName;
+loadFile("ModelTesting.mo");
+list(OpenModelicaModelTesting);
+modelTestingType := OpenModelicaModelTesting.Kind.Instantiation; // or other enumerations, see ModelTesting.mo
+print(getErrorString());
+
+// referenceFile := "ReferenceFiles/Modelica.Mechanics.MultiBody.Examples.Elementary.DoublePendulum.mat";
+stopTime := 0.0; // For reading stopTime from annotation
+relTol := 0.01;
+absTol := 0.0001;
+compareVars := {"revolute1.phi","revolute1.w","revolute1.a","revolute2.phi","revolute2.w","revolute2.a"};
+
+sec_line := "\n===========\n";
+
+
+print("MODEL CHECK: " + modelName);
+print(sec_line);
+
+// // Load Modelica library first (if needed)
+ print("1. Loading Modelica Standard Library...\n");
+ loadModel(Modelica);
+
+// // Load your model
+print("2. Loading model: " + modelName + "...\n");
+ if loadFile(modelPath) then
+   print("   OK Model loaded successfully\n");
+ else
+//   // Try alternative load methods
+// print("   ! WARNING: Could not load model via loadFile\n");
+   if loadModel(modelName) then
+     print("   OK Model loaded via loadModel\n");
+   else
+     print("   X ERROR: Could not load model\n");
+     print(getErrorString());
+     exit(1);
+   end if;
+ end if;
+
+
+libs := getLoadedLibraries();
+print("   Loaded Libraries:\n");
+
+for i in 1:size(libs,1) loop
+  print("     - " + libs[i,1] + " (version: " + libs[i,2] + ")\n" );
+end for;
+// print(getLoadedLibraries());
+
+
+
+print("   Check model:\n");
+
+checkModel(stringTypeName(modelName)); // Clear previous errors
+print(getErrorString());
+
+// // ============================================
+// // 3. Basic Model Information
+// // ============================================
+print("\n3. Basic Model Information:\n");
+// print("   Class name: " + getClassNames() + "\n");
+
+// // // Check if model exists
+// if isModel(modelName) then
+//   print("   OK Model exists in symbol table\n");
+// else
+//   print("   X ERROR: Model not found\n");
+//   exit(1);
+// end if;
+
+// // Get model type
+// modelType := getClassInformation(stringTypeName(modelName));
+// print("   Model type: " + modelType + "\n");
+
+// // ============================================
+// // 4. Check Model for Errors
+// // ============================================
+print("\n4. Running checkModel...\n");
+checkStatus := checkModel(stringTypeName(modelName)); 
+print(getErrorString());
+// print("   checkModel returned: " + String(checkStatus) + "\n");
+// print("   Error messages:\n" + getErrorString() + "\n");
+
+// // ============================================
+// // 5. List Model Contents
+// // ============================================
+print("5. Model Contents:\n");
+print(sec_line);
+list(modelName);
+print(sec_line);
+
+
+// // ============================================
+// // 6. Check for Specific Issues
+// // ============================================
+// print("\n6. Additional Checks:\n");
+
+// // Check for high-index DAEs
+// print("   Checking DAE index...\n");
+// checkIndex(modelName);
+
+// // Check balance
+// print("   Checking balance...\n");
+// checkBalance(modelName);
+
+// // Check states
+// print("   Number of states: " + String(getNumberOfStates(modelName)) + "\n");
+
+// // ============================================
+// // 7. Try Translation
+// // ============================================
+// print("\n7. Attempting Translation...\n");
+// translateModel(modelName, simflags="-d=none");
+
+// errString := getErrorString();
+// if errString == "" then
+//   print("   ✓ Translation successful\n");
+// else
+//   print("   ✗ Translation errors:\n" + errString + "\n");
+// end if;
+
+// print("\n" + String(70, '='));
+// print("CHECK COMPLETE");
+// print(String(70, '=') + "\n");
+
+
+if modelTestingType == OpenModelicaModelTesting.Kind.Instantiation then
+  print("Start instantiateModel\n");
+  str:=instantiateModel(stringTypeName(modelName));
+  res:=str <> "";
+  error:=getErrorString();
+  print(if res then "Frontend succeeded\n" else "Frontend failed\n");
+  print(error);
+  print("instantiateModel returned string:\n");
+  print(str);
+end if;
+
+
+// Test 1: Baseline
+
+print("=== Test 1: Baseline ===");
+currentDir := "";
+workDir := "";
+runScript(rootPath + "scripts/change_work_dir.mos");
+// cd(workDir);
+print(modelName + ": Simulating model for baseline generation...\n");
+// simulate(Pendulum, stopTime=stopTime, method="dassl", tolerance=relTol, outputFormat="mat");
+// simulate(stringTypeName(modelName));
+simulate(Pendulum);
+// simulate(stringTypeName(modelName));
+// simulate(className=stringTypeName(modelName), stopTime=stopTime, method="dassl", tolerance=relTol, absoluteTolerance=absTol, outputFormat="mat");
+print(getErrorString());
+cd(currentDir);
